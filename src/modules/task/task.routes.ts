@@ -1,6 +1,11 @@
 import express from "express";
-import dtoValidationMiddleware from "../dto.validate";
-import { AssignTaskDTO, CreateTaskDTO, ChangeStateTaskDTO, DeleteTaskDTO } from "./task.dto";
+import dtoValidationMiddleware from "../../libs/middleware/dto.validate";
+import {
+  AssignTaskDTO,
+  CreateTaskDTO,
+  ChangeStateTaskDTO,
+  DeleteTaskDTO
+} from "./task.dto";
 import { TaskController } from "./task.controller";
 
 const taskController = new TaskController();

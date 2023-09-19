@@ -10,8 +10,10 @@ import { initScheduledJobs } from "./cron";
 import { userRouter } from "./modules/user/user.routes";
 import { taskRouter } from "./modules/task/task.routes";
 import { checkRoute } from "./libs/middleware";
+import { connectRedis } from "./redis";
 
 connectDb();
+connectRedis()
 
 const app: Express = express();
 const PORT: any = APP_CONFIG.PORT;

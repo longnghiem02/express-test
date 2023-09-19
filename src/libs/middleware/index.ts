@@ -1,6 +1,13 @@
 import { RequestHandler } from "express";
 import { jwtDecode } from "../jwt";
-import { needLoginPaths, needRolePaths, nonSecurePaths } from "../../configs/constant";
+import {
+  message,
+  jwtKey,
+  needLoginPaths,
+  needRolePaths,
+  nonSecurePaths,
+  role
+} from "../../configs/constant";
 
 export function checkRoute(): RequestHandler {
   return (req, res, next) => {
@@ -8,33 +15,31 @@ export function checkRoute(): RequestHandler {
       return next();
     }
     
-    else if (needLoginPaths.includes(req.path)) {
-      const token = req.body.jwt;
+    const token = req.body.jwt;
+    const result = jwtDecode(token, jwtKey);
+
+    if (needLoginPaths.includes(req.path)) {
       if (token) {
         next();
       } else {
         return res.status(400).json({
-          errMessage: `You must login`
+          errMessage: message.errLogin
         });
       }
-    }
-    
-    else if (needRolePaths.includes(req.path)) {
-      const token = req.body.jwt;
+    } else if (needRolePaths.includes(req.path)) {
       if (token) {
-        const result = jwtDecode(token, "secret");
-        if (result.role === "admin") {
+        if (result.role === role.admin) {
           next();
         } else {
           return res.status(400).json({
-            errMessage: `You don't have permission`
+            errMessage: message.errPermission
           });
         }
       } else {
         return res.status(400).json({
-          errMessage: `You must login`
+          errMessage: message.errLogin
         });
       }
-    } 
+    }
   };
 }

@@ -1,34 +1,44 @@
 import { loginCondition, signUpCondition, userData } from "./user.types";
 import { UserRepository } from "./user.repository";
 import { jwtEncrypt } from "../../libs/jwt";
-// import { config } from "dotenv";
-// config({ path: (process.cwd(), ".env") });
+import { message, jwtKey } from "../../configs/constant";
+import {
+  HTTPResponse,
+  responseData,
+  responseError
+} from "../../libs/types/HTTPResponse.type";
 
-// const jwtPrivateKey = process.env.JWT_PRIVATE_KEY
+const userRepository = new UserRepository();
 
-export class UserService extends UserRepository {
-  constructor() {
-    super();
-  }
-
-  handleSignUp = (condition: signUpCondition, data: userData) => {
-    const response = this.findOrInsert(condition, data);
-    if (!response) {
-      return {
-        errMessage: "error!"
-      };
+export class UserService {
+  handleSignUp = async (
+    condition: signUpCondition,
+    data: userData
+  ): Promise<HTTPResponse> => {
+    try {
+      const response = userRepository.findOrInsert(condition, data);
+      if (!response) {
+        return responseError(message.errServer);
+      }
+      return responseData(message.ok, response);
+    } catch (error) {
+      return responseError(error);
     }
-    return response;
   };
 
-  handleLogIn = async (condition: loginCondition) => {
-    const response = await this.findOneBy(condition);
-    if (response) {
-      const token = jwtEncrypt({ id: response.id, role: response.role }, "secret")
-      return token;
+  handleLogIn = async (condition: loginCondition): Promise<HTTPResponse> => {
+    try {
+      const response = await userRepository.findOneBy(condition);
+      if (response) {
+        const token = jwtEncrypt(
+          { id: response.id, role: response.role },
+          jwtKey
+        );
+        return responseData(message.ok, token);
+      }
+      return responseError(message.errAccountExist);
+    } catch (error) {
+      return responseError(error);
     }
-    return {
-      errMessage: "Account not exits!"
-    };
   };
 }

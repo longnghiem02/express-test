@@ -1,6 +1,6 @@
 import express from "express";
 import { UserController } from "./user.controller";
-import dtoValidationMiddleware from "../dto.validate";
+import dtoValidationMiddleware from "../../libs/middleware/dto.validate";
 import { UserLoginDTO, UserSignUpDTO } from "./user.dto";
 
 const userController = new UserController();

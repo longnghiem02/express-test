@@ -1,19 +1,15 @@
 import { loginCondition, signUpCondition, userData } from "./user.types";
 import { UserService } from "./user.services";
 
-// const userServices = new UserService()
+const userServices = new UserService()
 
-export class UserController extends UserService {
-  constructor() {
-    super();
-  }
-
+export class UserController {
   userSignUp = async (req: any, res: any) => {
     const condition: signUpCondition = {
       username: req.body.username
     };
     const data: userData = req.body
-    const result = await this.handleSignUp(condition, data);
+    const result = await userServices.handleSignUp(condition, data);
     res.status(200).json(result);
   };
 
@@ -22,7 +18,7 @@ export class UserController extends UserService {
       username: req.body.username,
       password: req.body.password
     };
-    const result = await this.handleLogIn(condition);
+    const result = await userServices.handleLogIn(condition);
     res.status(200).json(result);
   };
 }

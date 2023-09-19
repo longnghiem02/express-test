@@ -1,3 +1,4 @@
+import { jwtKey } from "../../configs/constant";
 import { jwtDecode } from "../../libs/jwt";
 import { TaskService } from "./task.services";
 import {
@@ -5,7 +6,6 @@ import {
   assignTaskData,
   changeStateTaskCondition,
   changeStateTaskData,
-  createTaskCondition,
   createTaskData,
   deleteTaskCondition
 } from "./task.types";
@@ -15,16 +15,13 @@ const taskService = new TaskService()
 export class TaskController{
 
   createTask = async (req: any, res: any) => {
-    const jwtDecoded = jwtDecode(req.body.jwt, "secret");
-    const condition: createTaskCondition = {
-      id: req.body.created_admin_id
-    };    
+    const jwtDecoded = jwtDecode(req.body.jwt, jwtKey);
     const data: createTaskData = {
       created_admin_id: jwtDecoded.id,
       detail: req.body.detail,
       completed: req.body.completed
     };
-    const result = await taskService.handleCreateTask(condition, data);
+    const result = await taskService.handleCreateTask(data);
     res.status(200).json(result);
   };
 

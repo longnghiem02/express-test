@@ -18,6 +18,12 @@ export class Task extends AbstractEntity {
   @Column({
     nullable: false
   })
+  name: string;
+
+  @Index()
+  @Column({
+    nullable: false
+  })
   detail: string;
 
   @Index()
